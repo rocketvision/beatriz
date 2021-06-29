@@ -10,7 +10,7 @@ pack () {
     echo Pack: $1/$2
 
     pushd build/$1/$2 > /dev/null
-    rm build.zip
+    rm -f build.zip
     zip build.zip $3 > /dev/null
     popd > /dev/null
 }
@@ -18,7 +18,7 @@ pack () {
 copy () {
     echo Copy: $1/$2
 
-    cp build/$1/$2/build.zip build/$1.zip
+    cp build/$1/$2/build.zip build/$3.zip
 }
 
 build linux amd64
@@ -31,6 +31,6 @@ pack windows amd64 beatriz.exe
 pack darwin amd64 beatriz
 pack darwin arm64 beatriz
 
-copy linux amd64
-copy windows amd64
-copy darwin arm64
+copy linux amd64 linux
+copy windows amd64 windows
+copy darwin arm64 m1

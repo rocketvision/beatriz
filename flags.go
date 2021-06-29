@@ -72,8 +72,5 @@ func matchCode(actual string, expected string) bool {
 	}
 	firstDigit := strings.IndexAny(actual, "1234567890")
 	class := actual[:firstDigit]
-	if class == expected {
-		return true
-	}
-	return false
+	return class == expected
 }
