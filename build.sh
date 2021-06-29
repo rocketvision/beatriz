@@ -11,7 +11,7 @@ pack () {
 
     pushd build/$1/$2 > /dev/null
     rm -f build.zip
-    zip build.zip $3 > /dev/null
+    zip build.zip beatriz$3 > /dev/null
     popd > /dev/null
 }
 
@@ -26,10 +26,10 @@ build windows amd64
 build darwin amd64
 build darwin arm64
 
-pack linux amd64 beatriz
-pack windows amd64 beatriz.exe
-pack darwin amd64 beatriz
-pack darwin arm64 beatriz
+pack linux amd64
+pack windows amd64 .exe
+pack darwin amd64
+pack darwin arm64
 
 copy linux amd64 linux
 copy windows amd64 windows
