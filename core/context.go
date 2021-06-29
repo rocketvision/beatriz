@@ -17,17 +17,18 @@ func NewContext(state *State) *Context {
 	}
 }
 
-func (c *Context) Issue(typ IssueType, format string, args ...interface{}) {
+func (c *Context) Issue(typ IssueType, code string, format string, args ...interface{}) {
 	c.state.issues = append(c.state.issues, Issue{
 		Type: typ,
-		Pos:  c.pos,
+		Code: code,
 		Text: fmt.Sprintf(format, args...),
+		Pos:  c.pos,
 	})
 }
 
-func (c *Context) IssueError(typ IssueType, err error) {
-	c.Issue(typ, err.Error())
-}
+// func (c *Context) IssueError(typ IssueType, err error) {
+// 	c.Issue(typ, err.Error())
+// }
 
 func (c *Context) Issues() []Issue {
 	return c.state.issues

@@ -6,18 +6,14 @@ import (
 	"golang.org/x/net/html"
 )
 
-type Checker struct{}
-
-func (Checker) Reset(ctx *core.Context) {}
-
-func (Checker) EnterElement(ctx *core.Context, tag string, attrs []html.Attribute, closed bool) {
+func EnterElement(ctx *core.Context, tag string, attrs []html.Attribute) {
 	if util.HasAttr(attrs, "style") {
-		ctx.Issue(core.BestPractice, "%v: Evite estilização inline (style).", tag)
+		ctx.Issue(core.BestPractice, "inline1", "%v: Evite estilização inline (style).", tag)
 	}
 }
 
-func (Checker) LeaveElement(ctx *core.Context, tag string) {}
-
 func init() {
-	core.RegisterChecker(Checker{})
+	core.RegisterChecker(&core.Checker{
+		EnterElement: EnterElement,
+	})
 }

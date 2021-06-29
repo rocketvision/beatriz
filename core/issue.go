@@ -12,6 +12,7 @@ const (
 
 type Issue struct {
 	Type IssueType
-	Pos  Position
+	Code string
 	Text string
+	Pos  Position
 }

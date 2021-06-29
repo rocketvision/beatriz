@@ -1,17 +1,7 @@
 package core
 
-import (
-	"golang.org/x/net/html"
-)
+var registry []*Checker
 
-type Checker interface {
-	Reset(*Context)
-	EnterElement(*Context, string, []html.Attribute, bool)
-	LeaveElement(*Context, string)
-}
-
-var registry []Checker
-
-func RegisterChecker(c Checker) {
+func RegisterChecker(c *Checker) {
 	registry = append(registry, c)
 }

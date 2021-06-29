@@ -19,7 +19,7 @@ func (p *Processor) ProcessReader(r io.Reader) ([]Issue, error) {
 	ctx := NewContext(state)
 
 	for _, checker := range registry {
-		checker.Reset(ctx)
+		checker.callReset(ctx)
 	}
 
 	tokenizer := html.NewTokenizer(r)
@@ -42,7 +42,7 @@ func (p *Processor) ProcessReader(r io.Reader) ([]Issue, error) {
 			attrs := token.Attr
 
 			for _, checker := range registry {
-				checker.EnterElement(ctx, tag, attrs, false)
+				checker.callEnterElement(ctx, tag, attrs)
 			}
 
 		case html.EndTagToken:
@@ -50,7 +50,40 @@ func (p *Processor) ProcessReader(r io.Reader) ([]Issue, error) {
 			tag := token.Data
 
 			for _, checker := range registry {
-				checker.LeaveElement(ctx, tag)
+				checker.callLeaveElement(ctx, tag)
+			}
+
+		case html.SelfClosingTagToken:
+			token := tokenizer.Token()
+			tag := token.Data
+			attrs := token.Attr
+
+			for _, checker := range registry {
+				checker.callEnterLeaveElement(ctx, tag, attrs)
+			}
+
+		case html.CommentToken:
+			token := tokenizer.Token()
+			text := token.Data
+
+			for _, checker := range registry {
+				checker.callEnterComment(ctx, text)
+			}
+
+		case html.DoctypeToken:
+			token := tokenizer.Token()
+			text := token.Data
+
+			for _, checker := range registry {
+				checker.callEnterDoctype(ctx, text)
+			}
+
+		case html.TextToken:
+			token := tokenizer.Token()
+			text := token.Data
+
+			for _, checker := range registry {
+				checker.callEnterText(ctx, text)
 			}
 
 		}

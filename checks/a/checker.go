@@ -6,32 +6,22 @@ import (
 	"golang.org/x/net/html"
 )
 
-var invalid = map[string]bool{
-	"#":                   true,
-	"javascript:void(0)":  true,
-	"javascript:void(0);": true,
-}
-
-type Checker struct{}
-
-func (Checker) Reset(ctx *core.Context) {}
-
-func (Checker) EnterElement(ctx *core.Context, tag string, attrs []html.Attribute, closed bool) {
+func EnterElement(ctx *core.Context, tag string, attrs []html.Attribute) {
 	if tag != "a" {
 		return
 	}
 	href, hasHref := util.GetAttr(attrs, "href")
 	if !hasHref {
-		ctx.Issue(core.SyntaxError, "a: Adicione o atributo href.")
+		ctx.Issue(core.SyntaxError, "a1", "a: Adicione o atributo href.")
 		return
 	}
-	if invalid[href] {
-		ctx.Issue(core.Accessibility, "a: O atributo href deve conter uma URL válida.")
+	if InvalidHREF[href] {
+		ctx.Issue(core.Accessibility, "a2", "a: O atributo href deve conter uma URL válida.")
 	}
 }
 
-func (Checker) LeaveElement(ctx *core.Context, tag string) {}
-
 func init() {
-	core.RegisterChecker(Checker{})
+	core.RegisterChecker(&core.Checker{
+		EnterElement: EnterElement,
+	})
 }

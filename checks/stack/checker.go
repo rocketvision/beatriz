@@ -5,71 +5,47 @@ import (
 	"golang.org/x/net/html"
 )
 
-var ignore = map[string]bool{
-	"area":    true,
-	"base":    true,
-	"br":      true,
-	"col":     true,
-	"command": true,
-	"embed":   true,
-	"hr":      true,
-	"img":     true,
-	"input":   true,
-	"keygen":  true,
-	"link":    true,
-	"meta":    true,
-	"param":   true,
-	"source":  true,
-	"track":   true,
-	"wbr":     true,
+func Reset(ctx *core.Context) {
+	stack = nil
+	broken = false
 }
 
-type Checker struct {
-	stack      []string
-	broken     bool
-	persistent bool
-}
-
-func (c *Checker) Reset(ctx *core.Context) {
-	c.stack = nil
-	c.broken = false
-
-	c.persistent = true // TODO: Debug-only?
-}
-
-func (c *Checker) EnterElement(ctx *core.Context, tag string, attrs []html.Attribute, closed bool) {
-	if c.broken && !c.persistent {
+func EnterElement(ctx *core.Context, tag string, attrs []html.Attribute) {
+	if broken && !Persistent {
 		return
 	}
-	if ignore[tag] {
+	if NoCloseTags[tag] {
 		return
 	}
-	c.stack = append(c.stack, tag)
+	pushTag(tag)
 }
 
-func (c *Checker) LeaveElement(ctx *core.Context, tag string) {
-	if ignore[tag] {
-		ctx.Issue(core.SyntaxError, "%v: Não feche esse elemento.", tag)
+func LeaveElement(ctx *core.Context, tag string) {
+	if NoCloseTags[tag] {
+		ctx.Issue(core.SyntaxError, "stack1", "%v: Não feche esse elemento.", tag)
 		return
 	}
 
-	if c.broken && !c.persistent {
+	if broken && !Persistent {
 		return
 	}
-	if c.stack == nil {
-		ctx.Issue(core.SyntaxError, "%v: Elemento fechado na raiz do documento.", tag)
+	if stack == nil {
+		ctx.Issue(core.SyntaxError, "stack2", "%v: Elemento fechado na raiz do documento.", tag)
 		// c.broken = true
 		return
 	}
-	innermost := c.stack[len(c.stack)-1]
+	innermost := peekTag()
 	if tag != innermost {
-		ctx.Issue(core.SyntaxError, "%v: Feche o elemento %v anterior.", tag, innermost)
-		c.broken = true
+		ctx.Issue(core.SyntaxError, "stack3", "%v: Feche o elemento %v anterior.", tag, innermost)
+		broken = true
 		return
 	}
-	c.stack = c.stack[:len(c.stack)-1]
+	popTag()
 }
 
 func init() {
-	core.RegisterChecker(&Checker{})
+	core.RegisterChecker(&core.Checker{
+		EnterElement: EnterElement,
+		LeaveElement: LeaveElement,
+	})
 }
