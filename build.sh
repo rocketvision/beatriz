@@ -1,24 +1,35 @@
 #!/bin/bash
 
 build () {
-    echo Build: $1/$2
+    local os=$1
+    local arch=${2:-amd64}
 
-    GOOS=$1 GOARCH=$2 go build -o build/$1/$2/
+    echo Build: $os/$arch
+
+    GOOS=$os GOARCH=$arch go build -o build/$os/$arch/
 }
 
 pack () {
-    echo Pack: $1/$2
+    local os=$1
+    local arch=${2:-amd64}
+    local ext=$3
 
-    pushd build/$1/$2 > /dev/null
+    echo Pack: $os/$arch
+
+    pushd build/$os/$arch > /dev/null
     rm -f build.zip
-    zip build.zip beatriz$3 > /dev/null
+    zip build.zip beatriz$ext > /dev/null
     popd > /dev/null
 }
 
 copy () {
-    echo Copy: $1/$2
+    local os=$1
+    local arch=${2:-amd64}
+    local dest=${3:-$os}
 
-    cp build/$1/$2/build.zip build/$3.zip
+    echo Copy: $os/$arch
+
+    cp build/$os/$arch/build.zip build/$dest.zip
 }
 
 build linux amd64
@@ -31,6 +42,6 @@ pack windows amd64 .exe
 pack darwin amd64
 pack darwin arm64
 
-copy linux amd64 linux
-copy windows amd64 windows
+copy linux amd64
+copy windows amd64
 copy darwin arm64 m1
