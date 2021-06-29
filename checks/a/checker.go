@@ -15,7 +15,7 @@ func EnterElement(ctx *core.Context, tag string, attrs []html.Attribute) {
 		ctx.Issue(core.SyntaxError, "a1", "a: Adicione o atributo href.")
 		return
 	}
-	if InvalidHREF[href] {
+	if RejectedHREF[href] {
 		ctx.Issue(core.Accessibility, "a2", "a: O atributo href deve conter uma URL válida.")
 	}
 }

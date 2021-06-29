@@ -87,7 +87,7 @@ func processTree(root string) {
 					if FullFormatting {
 						log.Printf("  Linha %4v | %v [%v]", issue.Pos.Line, issue.Text, issue.Code)
 					} else {
-						log.Printf("  (%v) %v", issue.Pos.Line, issue.Text)
+						log.Printf("  [%v] %v", issue.Pos.Line, issue.Text)
 					}
 					count++
 				}
