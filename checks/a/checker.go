@@ -3,6 +3,7 @@ package a
 import (
 	"github.com/rocketvision/beatriz/core"
 	"github.com/rocketvision/beatriz/util"
+	"golang.org/x/net/html"
 )
 
 var invalid = map[string]bool{
@@ -15,7 +16,7 @@ type Checker struct{}
 
 func (Checker) Reset(ctx *core.Context) {}
 
-func (Checker) EnterElement(ctx *core.Context, tag string, attrs []core.Attr, closed bool) {
+func (Checker) EnterElement(ctx *core.Context, tag string, attrs []html.Attribute, closed bool) {
 	if tag != "a" {
 		return
 	}

@@ -1,8 +1,8 @@
 package util
 
-import "github.com/rocketvision/beatriz/core"
+import "golang.org/x/net/html"
 
-func GetAttrAll(attrs []core.Attr, key string) []string {
+func GetAttrAll(attrs []html.Attribute, key string) []string {
 	var result []string
 	for _, attr := range attrs {
 		if attr.Key == key {
@@ -12,7 +12,7 @@ func GetAttrAll(attrs []core.Attr, key string) []string {
 	return result
 }
 
-func GetAttr(attrs []core.Attr, key string) (string, bool) {
+func GetAttr(attrs []html.Attribute, key string) (string, bool) {
 	for _, attr := range attrs {
 		if attr.Key == key {
 			return attr.Val, true
@@ -21,7 +21,7 @@ func GetAttr(attrs []core.Attr, key string) (string, bool) {
 	return "", false
 }
 
-func HasAttr(attrs []core.Attr, key string) bool {
+func HasAttr(attrs []html.Attribute, key string) bool {
 	for _, attr := range attrs {
 		if attr.Key == key && attr.Val != "" {
 			return true

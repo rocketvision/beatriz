@@ -2,6 +2,7 @@ package stack
 
 import (
 	"github.com/rocketvision/beatriz/core"
+	"golang.org/x/net/html"
 )
 
 var ignore = map[string]bool{
@@ -33,10 +34,10 @@ func (c *Checker) Reset(ctx *core.Context) {
 	c.stack = nil
 	c.broken = false
 
-	c.persistent = true // TODO: Debug-only.
+	c.persistent = true // TODO: Debug-only?
 }
 
-func (c *Checker) EnterElement(ctx *core.Context, tag string, attrs []core.Attr, closed bool) {
+func (c *Checker) EnterElement(ctx *core.Context, tag string, attrs []html.Attribute, closed bool) {
 	if c.broken && !c.persistent {
 		return
 	}

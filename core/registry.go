@@ -1,19 +1,12 @@
 package core
 
-import "fmt"
-
-type Attr struct {
-	Key string
-	Val string
-}
-
-func (a *Attr) String() string {
-	return fmt.Sprintf("%v=%q", a.Key, a.Val)
-}
+import (
+	"golang.org/x/net/html"
+)
 
 type Checker interface {
 	Reset(*Context)
-	EnterElement(*Context, string, []Attr, bool)
+	EnterElement(*Context, string, []html.Attribute, bool)
 	LeaveElement(*Context, string)
 }
 

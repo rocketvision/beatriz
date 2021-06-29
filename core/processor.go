@@ -39,14 +39,7 @@ func (p *Processor) ProcessReader(r io.Reader) ([]Issue, error) {
 		case html.StartTagToken:
 			token := tokenizer.Token()
 			tag := token.Data
-
-			var attrs []Attr
-			for _, attr := range token.Attr {
-				attrs = append(attrs, Attr{
-					Key: attr.Key,
-					Val: attr.Val,
-				})
-			}
+			attrs := token.Attr
 
 			for _, checker := range registry {
 				checker.EnterElement(ctx, tag, attrs, false)
