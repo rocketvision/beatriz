@@ -7,22 +7,27 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/rocketvision/beatriz/core"
+
 	_ "github.com/rocketvision/beatriz/checks/a"
 	_ "github.com/rocketvision/beatriz/checks/attrs"
+	_ "github.com/rocketvision/beatriz/checks/basic"
 	_ "github.com/rocketvision/beatriz/checks/img"
 	_ "github.com/rocketvision/beatriz/checks/inline"
 	_ "github.com/rocketvision/beatriz/checks/stack"
-	"github.com/rocketvision/beatriz/core"
 )
 
 func main() {
 	log.SetFlags(0)
 
-	if len(os.Args) < 2 {
+	args := ParseFlags()
+	if len(args) < 1 {
 		log.Printf("Uso: %v <arquivo ou diretório>", os.Args[0])
 		os.Exit(1)
 	}
-	processTree(os.Args[1])
+	// TODO: Single file.
+	// TODO: Merge results?
+	processTree(args[0])
 }
 
 var formats = []string{
@@ -75,13 +80,22 @@ func processTree(root string) {
 			if err != nil {
 				return err
 			}
+
+			count := 0
 			for _, issue := range issues {
-				log.Printf("  Linha %4v | %v", issue.Pos.Line, issue.Text)
+				if FilterIssue(&issue) {
+					if FullFormatting {
+						log.Printf("  Linha %4v | %v [%v]", issue.Pos.Line, issue.Text, issue.Code)
+					} else {
+						log.Printf("  (%v) %v", issue.Pos.Line, issue.Text)
+					}
+					count++
+				}
 			}
-			log.Println("Total:", len(issues))
+			log.Println("Total:", count)
 			log.Println()
 
-			total += len(issues)
+			total += count
 			return nil
 		})
 	if err != nil {
