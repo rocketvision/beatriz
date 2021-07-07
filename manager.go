@@ -137,6 +137,9 @@ func (m *Manager) PrintSummary() {
 
 	log.Println("Sumário")
 	for _, item := range m.summary {
+		if item.total == 0 {
+			continue
+		}
 		if FullFormatting {
 			log.Printf("  Erros %4d | %s", item.total, item.path)
 		} else {
