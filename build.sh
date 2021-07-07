@@ -32,16 +32,17 @@ copy () {
     cp build/$os/$arch/build.zip build/$dest.zip
 }
 
-build linux amd64
-build windows amd64
-build darwin amd64
+build linux
+build windows
+build darwin
 build darwin arm64
 
-pack linux amd64
+pack linux
 pack windows amd64 .exe
-pack darwin amd64
+pack darwin
 pack darwin arm64
 
-copy linux amd64
-copy windows amd64
+copy linux
+copy windows
+copy darwin
 copy darwin arm64 m1
